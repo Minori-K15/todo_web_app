@@ -10,6 +10,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /*
  * 新規作成
@@ -19,6 +20,14 @@ import jakarta.servlet.http.HttpServletResponse;
 public class NewController extends HttpServlet {
 	public void doGet (HttpServletRequest request, HttpServletResponse response) throws ServletException,
 		IOException {
+		// メッセージ
+		request.setAttribute("message", "新規ページです");
+		
+		// センションを取得
+		HttpSession session = request.getSession();
+		String username = (String) session.getAttribute("username");
+		request.getAttribute("username");
+		request.setAttribute("username", username);
 		
 		// 作成した日付を作成（デフォルト：今日）
 		// Calendarクラスのオブジェクトを生成する
@@ -37,12 +46,10 @@ public class NewController extends HttpServlet {
 		String limit = date_form.format(calendar.getTime());
 		request.setAttribute("limit", limit);
 		
-		// メッセージ
-		request.setAttribute("message", "新規ページです");
-		
 		// new.jspへリダイレクト
 		String view = "/WEB-INF/views/new.jsp";
 		RequestDispatcher dispatcher = request.getRequestDispatcher(view);
 		dispatcher.forward(request, response);
+
 	}
 }

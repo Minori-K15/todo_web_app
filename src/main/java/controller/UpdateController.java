@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/update")
 public class UpdateController extends HttpServlet {
@@ -20,6 +21,19 @@ public class UpdateController extends HttpServlet {
 			if (request.getAttribute("message") == null) {
 				request.setAttribute("message", "todoを管理しましょう");
 			}
+			
+			// セッション
+			HttpSession session = request.getSession();
+			String username = (String) session.getAttribute("username");
+			// String user_id = (String) session.getAttribute("user_id");
+			
+			// セッションから取得したusernameでログイン状態のチェックを行う
+			if (username != null) {
+				request.setAttribute("username", username);
+				} else {
+					// 未ログインの場合、ログイン画面に遷移
+					response.sendRedirect("login");
+				}
 			
 			// idを取得して、id毎に閲覧するようにする
 			int postId = Integer.parseInt(request.getParameter("id"));

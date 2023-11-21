@@ -17,14 +17,16 @@
 </head>
 <body>
   <h1><strong>Todo詳細</strong></h1>
+    <div class="posts">
+    <% String username = (String)request.getAttribute("username"); %>
     <% String message = (String)request.getAttribute("message"); %>
-    <p><%= message %></p>
+    <p><%= username %> さん <br> <%= message %></p>
     <p><strong>作成日：</strong><%= request.getAttribute("days") %></p>
     <p><strong>期限日：</strong><%= request.getAttribute("limit") %></p>
     <p><strong>優先度：</strong><%= request.getAttribute("priority") %></p>
     <p><strong>タイトル：</strong><%= request.getAttribute("title") %></p>
     <p><strong>本文：</strong><%= request.getAttribute("content") %></p><br>
-    
+    </div>
     <div class="d-grid gap-2 d-md-block">
       <button class="btn btn-light"><a href="list">戻る</a></button>
       <button class="btn btn-light"><a href='edit?id=<%= request.getAttribute("id") %>'>編集</a></button>

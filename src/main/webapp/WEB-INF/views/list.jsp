@@ -17,9 +17,11 @@
 </head>
 <body>
   <h1><strong>Todoリスト</strong></h1>
+   <% String username = (String)request.getAttribute("username"); %>
     <% String message = (String)request.getAttribute("message"); %>
-    <p><%= message %></p>
-  
+    <p>ようこそ <%= username %> さん <br> <%= message %></p>
+<%--     <p><%= message %></p> --%>
+ 
   <form action="sort" method="get">
   <select id="select" name="select">
   <% String select = (String)request.getAttribute("select"); %>
@@ -60,6 +62,8 @@
   <div class="d-grid gap-2 d-md-block">
   <button class="btn btn-light" type="button"><a href="new">新規作成</a></button>
   <button class="btn btn-light" type="button"><a href="all_delete">一括削除</a></button>
+<!--   <button class="btn btn-light" type="button"><a href="login">戻る</a></button> -->
+  <button class="btn btn-light" type="button"><a href="session">ログアウト</a></button>
   </div>
   </body>
 </html>

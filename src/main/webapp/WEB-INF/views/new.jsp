@@ -19,9 +19,13 @@ contentType="text/html; charset=UTF-8"
 </head>
 <body>
     <h1><strong>Todo新規作成</strong></h1>
+    <% String username = (String)request.getAttribute("username"); %>
+    <% String user_id = (String)request.getAttribute("user_id"); %>
+    <p><%= username %> さん</p>
     <% String message = (String)request.getAttribute("message"); %>
    <p><%= message %></p>
     <form action="create" method="get">
+      <input type="hidden" name="user_id" value='<%= request.getAttribute("user_id")%>'>
       <label for="days">作成日</label><br>
       <input type="text" name="days" value='<%= request.getAttribute("days")%>'><br>
       <label for="limit">期限日</label><br>
@@ -40,14 +44,10 @@ contentType="text/html; charset=UTF-8"
       <label for="content">本文</label><br>
       <textarea name="content" id="" cols="30" rows="10"></textarea><br>
       <div class="d-grid gap-2 d-md-block">
-      <button class="btn btn-light" type="submit">保存する</button>
+      <button class="btn btn-light" type="submit">保存</button>
       <button class="btn btn-light"><a href='list'>キャンセル</a></button>
       <button class="btn btn-light"><a href='list'>戻る</a></button>
       </div>
   </form>
-  
-<!--   <ul>
-     <li><button><a href='list'>戻る</a></button></li>
-  </ul>   -->    
 </body>
 </html>

@@ -15,6 +15,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /**
  * Servlet implementation class SortController
@@ -34,6 +35,19 @@ public class SortController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		HttpSession session = request.getSession();
+		String username = (String) session.getAttribute("username");
+		
+		// セッションから取得したusernameでログイン状態のチェックを行う
+		if (username != null) {
+			request.setAttribute("username", username);
+			String view = "/WEB-INF/views/list.jsp";
+			request.getRequestDispatcher(view).forward(request, response);
+			} else {
+				// 未ログインの場合、ログイン画面に遷移
+				response.sendRedirect("login");
+			}
 		
 		// valueチェック
 		String select = request.getParameter("select");

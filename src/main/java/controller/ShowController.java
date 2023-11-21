@@ -12,9 +12,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @WebServlet("/show")
 public class ShowController extends HttpServlet {
+	private static final String JDBC_URL = "jdbc:mysql://localhost/todo";
+	private static final String DB_USER = "root";
+	private static final String DB_PASSWORD = "";
+	private static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";	
+	
 	public void doGet (HttpServletRequest request, HttpServletResponse response) throws ServletException,
 		IOException {
 			// メッセージがからの場合
@@ -22,22 +28,22 @@ public class ShowController extends HttpServlet {
 				request.setAttribute("message", "todoを管理しましょう");
 			}
 			
+			// センションを取得
+			HttpSession session = request.getSession();
+			String username = (String) session.getAttribute("username");
+			request.setAttribute("username", username);
+			
 			// idを取得して、id毎に閲覧するようにする
 			int postId = Integer.parseInt(request.getParameter("id"));
-			
-			// SQLに接続するための情報
-			String url = "jdbc:mysql://localhost/todo";
-			String user = "root";
-			String password = "";
 		
 			try {
-				Class.forName("com.mysql.jdbc.Driver");
+				Class.forName(JDBC_DRIVER);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 		
 		String sql = "SELECT * FROM posts WHERE id = ?";
-		try (Connection connection = DriverManager.getConnection (url, user, password);
+		try (Connection connection = DriverManager.getConnection (JDBC_URL, DB_USER, DB_PASSWORD);
 			PreparedStatement statement = connection.prepareStatement(sql)){
 				
 				// 一番初めの?に対して
@@ -82,4 +88,14 @@ public class ShowController extends HttpServlet {
 		RequestDispatcher dispatcher = request.getRequestDispatcher(view);
 		dispatcher.forward(request, response);
 	}
+//	// セッションから取得したusernameでログイン状態のチェックを行う
+//	if (username != null) {
+//		request.setAttribute("username", username);
+//		String view = "/WEB-INF/views/post.jsp";
+//		request.getRequestDispatcher(view).forward(request, response);
+//		} else {
+//			// 未ログインの場合、ログイン画面に遷移
+//			response.sendRedirect("login");
+//		}
+//	
 }

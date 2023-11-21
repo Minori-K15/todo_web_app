@@ -22,21 +22,33 @@
      
     <form action="update" method="get">
       <input type="hidden" name="id" value='<%= request.getAttribute("id")%>'>
+      <label for="username">作成者</label><br>
+      <input type="text" name="username" value='<%= request.getAttribute("username")%>' readonly><br>
       <label for="days">作成日</label><br>
       <input type="text" name="days" value='<%= request.getAttribute("days")%>'><br>
       <label for="limit">期限</label><br>
       <input type="text" name="limit" value='<%= request.getAttribute("limit")%>'><br>
 
-      <% String priority = (String)request.getAttribute ("priority"); %>
+      <% 
+       String priority = (String)request.getAttribute ("priority"); 
+       String selected_high = (priority != null && priority.equals("high") ? "selected" : ""); 
+       String selected_normal = (priority != null && priority.equals("normal") ? "selected" : "");
+       String selected_low = (priority != null && priority.equals("low") ? "selected" : "");
+       %>
+<%--
+      if(priority.equals("high")){
+        String selected_high = "selected";
+      } else if (priority.equals("normal")) {
+        String selected_normal = "selected";
+      } else if(priority.equals("low")) {
+        String selected_low = "selected";
+      }
+      %> --%>
       <label for="priority">優先度</label><br>
-      <% String selected = null; %>
-      <% selected = priority.equals("high") ? "selected" : "";%>
-      <% selected = priority.equals("normal") ? "selected" : "";%>
-      <% selected = priority.equals("low") ? "selected" : "";%>
       <select name = "priority">
-      <option value="high" <%= selected %>>high</option>
-      <option value="normal"<%= selected %>>normal</option>
-      <option value="low"<%= selected %>>low</option>
+      <option value="high" <%= selected_high %>>high</option>
+      <option value="normal"<%= selected_normal %>>normal</option>
+      <option value="low"<%= selected_low %>>low</option>
       </select><br>
       <label for="title">タイトル</label><br>
       <input type="text" name="title" value='<%= request.getAttribute("title")%>'><br>

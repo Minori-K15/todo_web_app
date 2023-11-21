@@ -11,6 +11,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 /*
  * id毎に削除
@@ -24,6 +25,19 @@ public class DestroyController extends HttpServlet {
 			if (request.getAttribute("message") == null) {
 				request.setAttribute("message", "todoを管理しましょう");
 			}
+			
+			HttpSession session = request.getSession();
+			String username = (String) session.getAttribute("username");
+			
+			// セッションから取得したusernameでログイン状態のチェックを行う
+			if (username != null) {
+				request.setAttribute("username", username);
+				String view = "/WEB-INF/views/list.jsp";
+				request.getRequestDispatcher(view).forward(request, response);
+				} else {
+					// 未ログインの場合、ログイン画面に遷移
+					response.sendRedirect("login");
+				}
 			
 			// idを取得して、id毎に閲覧するようにする
 			int postId = Integer.parseInt(request.getParameter("id"));
