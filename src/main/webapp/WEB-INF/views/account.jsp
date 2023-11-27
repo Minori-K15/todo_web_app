@@ -20,6 +20,8 @@
     <p><%= message %></p>
     
     <form action="account" method="post">
+      <label for="user_id">ユーザーID:</label><br>
+      <input type="text" id="user_id" name="user_id"><br>
       <label for="username">ユーザー名:</label><br>
       <input type="text" id="username" name="username"><br>
       <label for="password">パスワード:</label><br>

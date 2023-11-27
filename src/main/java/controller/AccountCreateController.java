@@ -13,7 +13,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import utils.HashGenerator;
 
 @WebServlet("/account")
@@ -30,30 +29,21 @@ public class AccountCreateController extends HttpServlet {
 				request.setAttribute("message", "アカウントを作成してください");
 			}
 			
-			// センションを取得
-			HttpSession session = request.getSession();
-			String username = (String) session.getAttribute("username");
-			request.setAttribute("username", username);
-			
-			// 
+			// accountへフォワード
 			String view = "/WEB-INF/views/account.jsp";
 			request.getRequestDispatcher(view).forward(request, response);
 	}
 	public void doPost (HttpServletRequest request, HttpServletResponse response) throws ServletException, 
 		IOException {
+		
 			// idを取得して、id毎に閲覧するようにする
+//			String user_id = request.getParameter("user_id");
 			String username = request.getParameter("username");
 			String password = request.getParameter("password");
 			String profile = request.getParameter("profile");
-		
-			try {
-				Class.forName(JDBC_DRIVER);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		
-		try (Connection connection = DriverManager.getConnection (JDBC_URL, DB_USER, DB_PASSWORD)){
-
+			
+		// DB接続
+		try (Connection connection = DriverManager.getConnection (JDBC_URL, DB_USER, DB_PASSWORD)){			
 			String hashedPassword = HashGenerator.generateHash(password);
 			String sql = "INSERT INTO users (username, `password`, profile) VALUES (?, ?, ?)";
 			
@@ -67,6 +57,7 @@ public class AccountCreateController extends HttpServlet {
 				
 				request.setAttribute("message", username + " のアカウントを作成できました" + "<br>" + "ログインしてください");
 				
+				// login.jspへフォワード
 				String view = "/WEB-INF/views/login.jsp";
 				RequestDispatcher dispatcher = request.getRequestDispatcher(view);
 				dispatcher.forward(request, response);
@@ -79,6 +70,16 @@ public class AccountCreateController extends HttpServlet {
 		} catch (NoSuchAlgorithmException e) {
 			e.printStackTrace();
 			throw new ServletException("Generate hash Failed", e);
+		}
+	}
+	
+	// JDBCドライバー接続
+	protected void jdbc_Connection() throws ServletException {
+		try {
+			Class.forName(JDBC_DRIVER);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ServletException("jdbc driver failed.", e);
 		}
 	}	
 }

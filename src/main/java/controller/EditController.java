@@ -23,24 +23,20 @@ public class EditController extends HttpServlet {
 	
 	public void doGet (HttpServletRequest request, HttpServletResponse response) throws ServletException,
 		IOException {
+		
+			// センションを取得
+			session(request, response);
+		
+			// JDBCドライバー接続
+			jdbc_Connection();
+		
 			// メッセージがからの場合
 			if (request.getAttribute("message") == null) {
 				request.setAttribute("message", "todoを管理しましょう");
 			}
 			
-			// センションを取得
-			HttpSession session = request.getSession();
-			String username = (String) session.getAttribute("username");
-			request.setAttribute("username", username);
-			
 			// idを取得して、id毎に修正
 			int postId = Integer.parseInt(request.getParameter("id"));
-			
-			try {
-				Class.forName(JDBC_DRIVER);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
 		
 		String sql = "SELECT * FROM posts WHERE id = ?";
 		try (Connection connection = DriverManager.getConnection (JDBC_URL, DB_USER, DB_PASSWORD);
@@ -89,13 +85,40 @@ public class EditController extends HttpServlet {
 		dispatcher.forward(request, response);
 	}
 	
-	// セッションから取得したusernameでログイン状態のチェックを行う
-//	if (username != null) {
-//		request.setAttribute("username", username);
-//		String view = "/WEB-INF/views/edit.jsp";
-//		request.getRequestDispatcher(view).forward(request, response);
-//		} else {
-//			// 未ログインの場合、ログイン画面に遷移
-//			response.sendRedirect("login");
-//		}
+	// セッション接続
+	private int session(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		// 変数の初期化
+		int id = 0;
+		String username = null;
+		
+		// サーバーの保持するセッションを取得する
+		HttpSession session = request.getSession(false);
+		if (session == null) {
+			// 未ログインの場合、ログイン画面に遷移
+			response.sendRedirect("login");
+		} else {
+			// セッションに保持されているユーザー名を取得
+			id = (int) session.getAttribute("id");
+			username = (String) session.getAttribute("username");
+			
+			request.setAttribute("id", id);
+			request.setAttribute("username", username);
+			
+			// メッセージの表示
+			if (request.getAttribute("message") == null) {
+				// nullの場合のメッセージ
+				request.setAttribute("message", "todoを管理しましょう");
+			}
+		}
+		return id;
+	}
+	// DB接続メソッド
+	private void jdbc_Connection() {
+		try {
+			// JDBCドライバ接続
+			Class.forName(JDBC_DRIVER);
+			} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
 }

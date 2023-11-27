@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+
 
 public class DBConnect {
 
@@ -15,52 +17,69 @@ public class DBConnect {
 	private static String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 	private static String messages = "";
 	
-	protected static void main (String[] args) {
-		// ドライバー接続メソッド
-		jdbc_driver(JDBC_DRIVER);
+	//
+	private static String DAYS = null;
+	private static String PRIORITY = null;
+	private static String TITLE = null;
+	private static String CONTENT = null;
+	
+	
+	protected static void main (String sql_Execute) {
 		
-		
+		// データベース接続を行うメソッド
+		Connection connection = getConnection();
+		String sql = sql_Execute;
 	}
-
-	// ドライバー接続
-	protected static String jdbc_driver(String jdbc_driver) {
-		try {
-			Class.forName(jdbc_driver);
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new IllegalArgumentException("[ERROR] JDBCドライバーを読み込めませんでした" + e);
+	
+	// DB接続メソッド
+	private static Connection getConnection(){
+		try{
+			Class.forName(JDBC_DRIVER);
+			try (Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD)) {
+				return connection;
+			}
+		 } catch (SQLException e) {
+			 throw new IllegalStateException("[ERROR] DB接続できませんでした" + e);
+		}catch (Exception e) {
+			throw new IllegalStateException("[ERROR] JDBCドライバーを読み込めませんでした" + e);
 		}
-		return jdbc_driver;
 	}
 	
-	// DB接続
-//	protected static void db_connect(String url, String user, String password, String sql) {
-//		try {
-//			Connection connection = DriverManager.getConnection(url, user, password);
-//			PreparedStatement statement = connection.prepareStatement(sql);
-//		} catch (Exception e) {
-//		}
-//	}
-	
-	// select
-	protected static void db_select(String sql, String days, String priority, String title, String content) {
-		try (Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
-				PreparedStatement statement = connection.prepareStatement(sql);
-				ResultSet results = statement.executeQuery())
+	// SELECT
+	protected static void db_Select(Connection connection, String sql) {
+		
+		try (PreparedStatement statement = connection.prepareStatement(sql);
+			ResultSet results = statement.executeQuery())
 		{
-			statement.setString(1, days);
-			statement.setString(2, priority);
-			statement.setString(3, title);
-			statement.setString(4, content);
+			statement.setString(1, DAYS);
+			statement.setString(2, PRIORITY);
+			statement.setString(3, TITLE);
+			statement.setString(4, CONTENT);
 			statement.executeUpdate();
-			messages = "タイトル: " + title + "の新規作成ができました";
+			messages = "タイトル: " + TITLE + "の新規作成ができました";
 		} catch (Exception e) {
 			messages = "Exception: " + e.getMessage();
 		}
 	}
 	
-	// create
-	protected static void db_create(String sql, String days, String priority, String title, String content) {
+	// CREATE
+	protected static void db_Create(Connection connection , String sql) {
+		try (PreparedStatement statement = connection.prepareStatement(sql);
+				ResultSet results = statement.executeQuery())
+			{
+				statement.setString(1, DAYS);
+				statement.setString(2, PRIORITY);
+				statement.setString(3, TITLE);
+				statement.setString(4, CONTENT);
+				statement.executeUpdate();
+				messages = "タイトル: " + TITLE + "の新規作成ができました";
+			} catch (Exception e) {
+				messages = "Exception: " + e.getMessage();
+			}
+	}
+	
+	// UPDATE
+	protected static void db_Update(String sql, String days, String priority, String title, String content) {
 		try (Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
 				PreparedStatement statement = connection.prepareStatement(sql))
 		{
@@ -75,8 +94,8 @@ public class DBConnect {
 		}
 	}
 	
-	// update
-	protected static void db_update(String sql, String days, String priority, String title, String content) {
+	// DELETE
+	protected static void db_Delete(String sql, String days, String priority, String title, String content) {
 		try (Connection connection = DriverManager.getConnection(JDBC_URL, DB_USER, DB_PASSWORD);
 				PreparedStatement statement = connection.prepareStatement(sql))
 		{

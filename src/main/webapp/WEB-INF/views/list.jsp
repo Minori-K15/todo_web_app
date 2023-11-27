@@ -46,6 +46,7 @@
   <tbody>
   <% ArrayList<HashMap<String, String>> rows =
   (ArrayList<HashMap<String, String>>)request.getAttribute("rows");
+  if (rows != null) {
   %>
   
   <% for (HashMap<String, String> columns : rows) { %>
@@ -56,14 +57,16 @@
   <td align="center" class="table-light"><%= columns.get("priority") %></td>
   <td align="center" class="table-light"><button class="btn btn-light"><a href='show?id=<%= columns.get("id") %>'><%= columns.get("title") %></a></button></td>
   </tr>
-  <% } %>
+  <% }} %>
   </tbody>
   </table>
   <div class="d-grid gap-2 d-md-block">
   <button class="btn btn-light" type="button"><a href="new">新規作成</a></button>
   <button class="btn btn-light" type="button"><a href="all_delete">一括削除</a></button>
 <!--   <button class="btn btn-light" type="button"><a href="login">戻る</a></button> -->
-  <button class="btn btn-light" type="button"><a href="session">ログアウト</a></button>
+  <form action="session" method="get">
+  <button class="btn btn-light" type="submit">ログアウト</a></button>
+  </form>
   </div>
   </body>
 </html>

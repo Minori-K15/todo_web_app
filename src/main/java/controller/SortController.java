@@ -29,44 +29,29 @@ public class SortController extends HttpServlet {
 	private static String JDBC_URL = "jdbc:mysql://localhost/todo";
 	private static String DB_USER = "root";
 	private static String DB_PASSWORD = "";
-	// private static String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+	private static String JDBC_DRIVER = "com.mysql.jdbc.Driver";
 	
 	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		HttpSession session = request.getSession();
-		String username = (String) session.getAttribute("username");
+		// セッション接続
+		session(request, response);
 		
-		// セッションから取得したusernameでログイン状態のチェックを行う
-		if (username != null) {
-			request.setAttribute("username", username);
-			String view = "/WEB-INF/views/list.jsp";
-			request.getRequestDispatcher(view).forward(request, response);
-			} else {
-				// 未ログインの場合、ログイン画面に遷移
-				response.sendRedirect("login");
-			}
-		
-		// valueチェック
+		// VALUEチェック
 		String select = request.getParameter("select");
+		System.out.println(select);
 		if(select == null ) {
 			request.setAttribute("messsage", "[ERROR]ソートできません");
 		}
-		
-		String set_Select = select;
-		
 		// コマンド選択
 		String sql = sort(select);
+		// 
+		String set_Select = select;
 		
 		// ドライバー読み込み
-		try {
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw new IllegalArgumentException("[ERROR] JDBCドライバーを読み込めませんでした" + e);
-		}
+		jdbc_Connection();
 		
 		// DBログイン
 		try (Connection connection = DriverManager.getConnection (JDBC_URL, DB_USER, DB_PASSWORD);
@@ -90,19 +75,7 @@ public class SortController extends HttpServlet {
 				String limit = results.getString("limit");
 				conlums.put("limit", limit);
 				
-				String priority = results.getString("priority");
-				switch (priority) {
-				case "0":
-					priority = "high";
-					break;
-				case "1":
-					priority = "normal";
-					break;
-				case "2":
-					priority = "low";
-					break;
-				}
-				
+				String priority = priority(results.getString("priority"));
 				conlums.put("priority", priority);
 				
 				String title = results.getString("title");
@@ -121,9 +94,47 @@ public class SortController extends HttpServlet {
 			e.printStackTrace();
 		}
 		// list.jspにリダイレクト
-		String forward = "/list";
-		RequestDispatcher dispatcher = request.getRequestDispatcher(forward);
+		String view = "/WEB-INF/views/list.jsp";
+		RequestDispatcher dispatcher = request.getRequestDispatcher(view);
 		dispatcher.forward(request, response);
+	}
+	
+	// セッション接続
+	private int session(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		// 変数の初期化
+		int id = 0;
+		String username = null;
+		
+		// サーバーの保持するセッションを取得する
+		HttpSession session = request.getSession(false);
+		if (session == null) {
+			// 未ログインの場合、ログイン画面に遷移
+			response.sendRedirect("login");
+		} else {
+			// セッションに保持されているユーザー名を取得
+			id = (int) session.getAttribute("id");
+			username = (String) session.getAttribute("username");
+			
+			request.setAttribute("id", id);
+			request.setAttribute("username", username);
+			
+			// メッセージの表示
+			if (request.getAttribute("message") == null) {
+				// nullの場合のメッセージ
+				request.setAttribute("message", "todoを管理しましょう");
+			}
+		}
+		return id;
+	}
+	
+	// JDBCドライバー接続メソッド
+	private void jdbc_Connection() {
+		try {
+			// JDBCドライバ接続
+			Class.forName(JDBC_DRIVER);
+			} catch (ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	// ソートコマンド選択
@@ -172,5 +183,21 @@ public class SortController extends HttpServlet {
 			return "priority_desc";
 		}
 		return return_select;
+	}
+	
+	// 優先度を置換するメソッド
+	protected String priority (String priority) {
+		switch (priority) {
+		case "0":
+			priority = "high";
+			break;
+		case "1":
+			priority = "normal";
+			break;
+		case "2":
+			priority = "low";
+			break;
+	}
+		return priority;
 	}
 }

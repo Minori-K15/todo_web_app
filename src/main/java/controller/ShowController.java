@@ -88,14 +88,4 @@ public class ShowController extends HttpServlet {
 		RequestDispatcher dispatcher = request.getRequestDispatcher(view);
 		dispatcher.forward(request, response);
 	}
-//	// セッションから取得したusernameでログイン状態のチェックを行う
-//	if (username != null) {
-//		request.setAttribute("username", username);
-//		String view = "/WEB-INF/views/post.jsp";
-//		request.getRequestDispatcher(view).forward(request, response);
-//		} else {
-//			// 未ログインの場合、ログイン画面に遷移
-//			response.sendRedirect("login");
-//		}
-//	
 }

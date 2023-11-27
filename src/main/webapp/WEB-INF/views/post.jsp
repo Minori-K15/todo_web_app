@@ -19,8 +19,10 @@
   <h1><strong>Todo詳細</strong></h1>
     <div class="posts">
     <% String username = (String)request.getAttribute("username"); %>
+<%--     <% Int user_id = (int)request.getAttribute("user_id"); %> --%>
     <% String message = (String)request.getAttribute("message"); %>
     <p><%= username %> さん <br> <%= message %></p>
+<%--     <p><strong>ID：</strong><%= request.getAttribute("user_id") %></p> --%>
     <p><strong>作成日：</strong><%= request.getAttribute("days") %></p>
     <p><strong>期限日：</strong><%= request.getAttribute("limit") %></p>
     <p><strong>優先度：</strong><%= request.getAttribute("priority") %></p>
