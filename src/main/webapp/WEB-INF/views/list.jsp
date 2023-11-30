@@ -20,8 +20,7 @@
    <% String username = (String)request.getAttribute("username"); %>
     <% String message = (String)request.getAttribute("message"); %>
     <p>ようこそ <%= username %> さん <br> <%= message %></p>
-<%--     <p><%= message %></p> --%>
- 
+    
   <form action="sort" method="get">
   <select id="select" name="select">
   <% String select = (String)request.getAttribute("select"); %>
@@ -34,7 +33,6 @@
   </select>
   <button class="btn btn-light" type="submit">並び替え</button>
   </form>
-  
   <table class="table table-striped table-hover table-sm">
   <thead  align="center" class="table-primary">
   <th width="30"><strong>ID</strong></th>
@@ -63,7 +61,6 @@
   <div class="d-grid gap-2 d-md-block">
   <button class="btn btn-light" type="button"><a href="new">新規作成</a></button>
   <button class="btn btn-light" type="button"><a href="all_delete">一括削除</a></button>
-<!--   <button class="btn btn-light" type="button"><a href="login">戻る</a></button> -->
   <form action="session" method="get">
   <button class="btn btn-light" type="submit">ログアウト</a></button>
   </form>

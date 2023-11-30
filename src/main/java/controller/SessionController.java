@@ -20,7 +20,6 @@ public class SessionController extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
 		// セッション接続確認
 		session(request, response);
 	}
@@ -35,23 +34,19 @@ public class SessionController extends HttpServlet {
 		}	else {
 			// セッションの破棄
 			session.invalidate();
-			
-			try {
-				request.setAttribute("message", "ログアウトしました" + "<br>"+ "ログインしてください");
-				// login画面にリダイレクト
-				// response.sendRedirect("login");
-				
-				// listへフォワード
-				String view = "/WEB-INF/views/login.jsp";
-				RequestDispatcher dispatcher = request.getRequestDispatcher(view);
-				dispatcher.forward(request, response);
-				
-			} catch (IOException e) {
-				e.printStackTrace();
-			} 
-			catch (ServletException e) {
-				e.printStackTrace();
-			}
+		}
+		try {
+			// メッセージ
+			request.setAttribute("message", "ログアウトしました" + "<br>"+ "ログインしてください");
+			// listへフォワード
+			String view = "/WEB-INF/views/login.jsp";
+			RequestDispatcher dispatcher = request.getRequestDispatcher(view);
+			dispatcher.forward(request, response);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
+		catch (ServletException e) {
+			e.printStackTrace();
 		}
 	}
 }

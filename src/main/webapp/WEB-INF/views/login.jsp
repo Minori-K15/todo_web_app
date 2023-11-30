@@ -23,13 +23,11 @@
    <form action="login" method="post">
       <label for="username">ユーザー名: </label><br>
       <input type="username" name="username"><br>
-<!--  <input type="id" name="user_id" placeholder="ユーザーIDを入力してください"><br> -->
       <label for="password">パスワード: </label><br>
       <input type="password" name="password"><br>
-<!--  <input type="password" name="password" placeholder="パスワードを入力してください"><br> -->
       <div class="d-grid gap-2 d-md-block">
         <button type="submit" class="btn btn-light">login</button>
-        <button type="submit" class="btn btn-light"><a href="account">新規作成</a></button>
+        <button type="submit" class="btn btn-light"><a href="account" style="text-decoration:none;">新規作成</a></button>
       </div>
    </form>
   </body>
